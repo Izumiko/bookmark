@@ -1,0 +1,23 @@
+index:
+- category: 常用
+  links:
+  - title: 百度
+    url: https://www.baidu.com/
+    favicon: img/www.baidu.com.png
+    searchwords: 百度 baidu bd baidu.com
+  - title: Google
+    url: https://www.google.com/webhp?hl=zh-CN
+    favicon: img/www.google.com.png
+    searchwords: Google   google.com
+  - title: IT之家
+    url: https://www.ithome.com/
+    favicon: img/www.ithome.com.png
+    searchwords: IT之家 zhijia zj ithome.com
+  - title: 哔哩哔哩
+    url: https://www.bilibili.com/
+    favicon: img/www.bilibili.com.png
+    searchwords: 哔哩哔哩 bilibili blbl bilibili.com
+  - title: Bangumi
+    url: https://bgm.tv/
+    favicon: img/bgm.tv.png
+    searchwords: Bangumi   bgm.tv

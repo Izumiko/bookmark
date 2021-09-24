@@ -1,0 +1,15 @@
+# theme.toml template for a Hugo theme
+# See https://github.com/gohugoio/hugoThemes#themetoml for an example
+
+name = "Hugo Theme Bookmark"
+license = "MIT"
+licenselink = "https://github.com/izumiko/hugo-theme-bookmark/blob/master/LICENSE"
+description = "Hugo theme for startpage"
+homepage = "https://github.com/izumiko/hugo-theme-bookmark"
+tags = ["startpage", "bookmark", "links"]
+features = []
+min_version = "0.78.0"
+
+[author]
+  name = "izumiko"
+  homepage = "https://github.com/izumiko/hugo-theme-bookmark"

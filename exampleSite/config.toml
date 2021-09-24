@@ -1,0 +1,7 @@
+baseURL = "http://example.org/"
+languageCode = "zh-CN"
+title = "个人网址导航"
+theme = "bookmark"
+disablePathToLower = true
+hasCJKLanguage = true
+disableKinds = ['taxonomy', 'term', 'sitemap']

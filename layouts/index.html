@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>{{ .Site.Title }}</title>
+<meta http-equiv="x-ua-compatible" content="ie=edge"/>
+<link rel="shortcut icon" type="image/png" href="/favicon.ico"/>
+<link rel="stylesheet" href="/assets/mobi.css/mobi.min.css" type='text/css' media='all' />
+<link rel="stylesheet" href="/assets/site.css" type='text/css' media='all' />
+</head>
+<body>
+  <div class="flex-center">
+    <div class="container">
+      <style id="search-style"></style>
+      <form id="search-form" class="form">
+        <input id="search-input" type="search" placeholder="Type to search" autoComplete="off" tabIndex="1" />
+      </form>
+      <ul class="site-bookmark-ul flex-left flex-wrap units-gap">
+        {{ range .Site.Data.websites.index }}
+          <li class="site-bookmark-li site-bookmark-category unit-1 top-gap text-muted text-small" data-name=''>
+            <span>{{ .category }}</span>
+          </li>
+          {{ range .links }}    
+            <li class="site-bookmark-li unit-0" data-name="{{ .searchwords }}">
+              <a href="{{ .url }}" class="site-bookmark-a flex-middle" tabIndex="9" target="_blank" >
+              {{ if and (.favicon) (not (eq .favicon "")) }}
+                <img class="site-bookmark-img" src="{{ .favicon }}" height="16" width="16" />
+              {{ else }}
+                <img class="site-bookmark-img" src="/assets/nofav.png" height="16" width="16" />
+              {{ end }}
+                <span>{{ .title }}</span>
+              </a>
+            </li>
+          {{ end }}
+        {{ end }}
+      </ul>
+      <footer class="text-center top-gap-big text-muted text-small">
+        <hr/>
+        <p>Powered By <a class="text-muted" href="https://github.com/Izumiko/123">123</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <script type='text/javascript' src="/assets/search.js"></script>
+</body>
+</html>
