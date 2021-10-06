@@ -1,8 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
+	"github.com/mat/besticon/ico"
 	"github.com/mozillazg/go-pinyin"
+	"golang.org/x/image/draw"
 	"gopkg.in/yaml.v2"
+	"image"
+	"image/png"
 	"io"
 	"io/ioutil"
 	"log"
@@ -10,18 +16,20 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Site struct {
-	Title       string
-	Url         string
-	Favicon     string
-	SearchWords string
+	Title        string `yaml:"title"`
+	Url          string `yaml:"url"`
+	Favicon      string `yaml:"favicon"`
+	SearchWords  string `yaml:"searchwords"`
+	DataUriClass string `yaml:"datauriclass,omitempty"`
 }
 
 type Sites struct {
-	Category string
-	Links    []Site
+	Category string `yaml:"category"`
+	Links    []Site `yaml:"links"`
 }
 
 type Categories struct {
@@ -29,13 +37,14 @@ type Categories struct {
 }
 
 func getFavicon(url string) string {
-	re := regexp.MustCompile("(?:\\w+\\.)+\\w+")
+	re := regexp.MustCompile("(?:[\\w-]+\\.)+\\w+")
 	host := re.FindString(url)
 	//googleDownSrv := "https://www.google.com/s2/favicons?domain_url="
 	yandexDownSrv := "http://favicon.yandex.net/favicon/"
 	//ddgDownSrv := "https://icons.duckduckgo.com/ip3/www.google.com.ico"
 	if len(host) > 0 {
 		fav := "content/img/" + host + ".png"
+		time.Sleep(500 * time.Microsecond)
 		resp, err := http.Get(yandexDownSrv + host)
 		if err != nil {
 			return ""
@@ -76,19 +85,86 @@ func getFavicon(url string) string {
 	}
 }
 
+func generateDataUri(file string) string {
+	if file == "" {
+		return "nofavicon"
+	} else {
+		class := strings.Replace(file, "img/", "", 1)
+		class = strings.Replace(class, ".png", "", 1)
+		class = strings.Replace(class, ".ico", "", 1)
+		class = strings.ReplaceAll(class, ".", "")
+		if strings.Contains("0123456789", class[0:1]) {
+			class = "c" + class
+		}
+		input, _ := os.Open("content/" + file)
+		defer func(input *os.File) {
+			err := input.Close()
+			if err != nil {
+				log.Fatal("converting image to data uri failed")
+			}
+		}(input)
+		out := new(bytes.Buffer)
+		var src image.Image
+		if strings.Contains(file, ".ico") {
+			src, _ = ico.Decode(input)
+		} else {
+			// Decode the image (from PNG to image.Image):
+			src, _ = png.Decode(input)
+		}
+		// Set the expected size that you want:
+		dst := image.NewRGBA(image.Rect(0, 0, 16, 16))
+		// Resize:
+		draw.BiLinear.Scale(dst, dst.Rect, src, src.Bounds(), draw.Over, nil)
+
+		// Encode to `output`:
+		err := png.Encode(out, dst)
+		if err != nil {
+			return ""
+		}
+
+		base64Img := base64.StdEncoding.EncodeToString(out.Bytes())
+		uri := "data:image/png;base64," + base64Img
+		css := []byte("." + class + " {\n" + "  background-image: url(\"" + uri + "\");\n  padding: 16px 0 0 0;\n}\n")
+		cssfile, err := os.OpenFile("static/assets/siteimg.css", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatalf("failed creating file: %s", err)
+		}
+		filestat, _ := cssfile.Stat()
+		if filestat.Size() == 0 {
+			nofav := []byte(".nofavicon {\n  background-image: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABs0lEQVR4AWL4//8/RRjO8Iucx+noO0O2qmlbUEnt5r3Juas+hsQD6KaG7dqCKPgx72Pe9GIY27btZBrbtm3btm0nO12D7tVXe63jqtqqU/iDw9K58sEruKkngH0DBljOE+T/qqx/Ln718RZOFasxyd3XRbWzlFMxRbgOTx9QWFzHtZlD+aqLb108sOAIAai6+NbHW7lUHaZkDFJt+wp1DG7R1d0b7Z88EOL08oXwjokcOvvUxYMjBFCamWP5KjKBjKOpZx2HEPj+Ieod26U+dpg6lK2CIwTQH0oECGT5eHj+IgSueJ5fPaPg6PZrz6DGHiGAISE7QPrIvIKVrSvCe2DNHSsehIDatOBna/+OEOgTQE6WAy1AAFiVcf6PhgCGxEvlA9QngLlAQCkLsNWhBZIDz/zg4ggmjHfYxoPGEMPZECW+zjwmFk6Ih194y7VHYGOPvEYlTAJlQwI4MEhgTOzZGiNalRpGgsOYFw5lEfTKybgfBtmuTNdI3MrOTAQmYf/DNcAwDeycVjROgZFt18gMso6V5Z8JpcEk2LPKpOAH0/4bKMCAYnuqm7cHOGHJTBRhAEJN9d/t5zCxAAAAAElFTkSuQmCC\");\n  padding: 16px 0 0 0;\n}\n")
+			_, err := cssfile.Write(nofav)
+			if err != nil {
+				return ""
+			}
+		}
+		_, err = cssfile.Write(css)
+		if err != nil {
+			return ""
+		}
+		err = cssfile.Close()
+		if err != nil {
+			return ""
+		}
+		return class
+	}
+}
+
 func processSite(site *Site, force bool) *Site {
 	if force {
 		site.Favicon = getFavicon(site.Url)
 	} else {
-		file := strings.Replace(site.Favicon, "img/", "content/img-old/", 1)
-		fi, err := os.Stat(file)
-		if err == nil && fi.Size() > 80 {
-			err = os.Rename(file, "content/"+site.Favicon)
+		fileold := strings.Replace(site.Favicon, "img/", "content/img-old/", 1)
+		fiold, err := os.Stat(fileold)
+		fi, err2 := os.Stat("content/" + site.Favicon)
+		if err == nil && fiold.Size() > 80 {
+			err = os.Rename(fileold, "content/"+site.Favicon)
 			if err != nil {
 				return nil
 			}
 		} else {
-			site.Favicon = getFavicon(site.Url)
+			if err2 != nil || fi.Size() < 80 {
+				site.Favicon = getFavicon(site.Url)
+			}
 		}
 	}
 
@@ -107,15 +183,20 @@ func processSite(site *Site, force bool) *Site {
 		tmpstr += v[0]
 	}
 	site.SearchWords += " " + tmpstr
-	re := regexp.MustCompile("(?:\\w+\\.)+\\w+")
+	re := regexp.MustCompile("(?:[\\w-]+\\.)+\\w+")
 	host := re.FindString(site.Url)
 	strs := strings.Split(host, ".")
 	site.SearchWords += " " + strings.Join(strs[len(strs)-2:], ".")
+	site.DataUriClass = generateDataUri(site.Favicon)
 	return site
 }
 
 func main() {
 	err := os.Rename("content/img", "content/img-old")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = os.Rename("static/assets/siteimg.css", "static/assets/siteimg-old.css")
 	if err != nil {
 		log.Fatal(err)
 	}

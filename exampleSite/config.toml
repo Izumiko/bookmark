@@ -5,3 +5,5 @@ theme = "bookmark"
 disablePathToLower = true
 hasCJKLanguage = true
 disableKinds = ['taxonomy', 'term', 'sitemap']
+[params]
+  useDataUri = false

@@ -8,6 +8,9 @@
 <link rel="shortcut icon" type="image/png" href="/favicon.ico"/>
 <link rel="stylesheet" href="/assets/mobi.css/mobi.min.css" type='text/css' media='all' />
 <link rel="stylesheet" href="/assets/site.css" type='text/css' media='all' />
+{{ if $.Site.Params.useDataUri }}
+<link rel="stylesheet" href="/assets/siteimg.css" type='text/css' media='all' />
+{{ end }}
 </head>
 <body>
   <div class="flex-center">
@@ -21,13 +24,17 @@
           <li class="site-bookmark-li site-bookmark-category unit-1 top-gap text-muted text-small" data-name=''>
             <span>{{ .category }}</span>
           </li>
-          {{ range .links }}    
+          {{ range .links }}
             <li class="site-bookmark-li unit-0" data-name="{{ .searchwords }}">
               <a href="{{ .url }}" class="site-bookmark-a flex-middle" tabIndex="9" target="_blank" >
-              {{ if and (.favicon) (not (eq .favicon "")) }}
-                <img class="site-bookmark-img" src="{{ .favicon }}" height="16" width="16" />
+              {{ if $.Site.Params.useDataUri }}
+                <img class="site-bookmark-img {{ .datauriclass }}" height="16" width="16" />
               {{ else }}
-                <img class="site-bookmark-img" src="/assets/nofav.png" height="16" width="16" />
+                {{ if and (.favicon) (not (eq .favicon "")) }}
+                  <img class="site-bookmark-img" src="{{ .favicon }}" height="16" width="16" />
+                {{ else }}
+                  <img class="site-bookmark-img" src="/assets/nofav.png" height="16" width="16" />
+                {{ end }}
               {{ end }}
                 <span>{{ .title }}</span>
               </a>
