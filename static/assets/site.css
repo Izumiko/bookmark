@@ -33,3 +33,10 @@
 .site-bookmark-img {
   margin-right: 5px;
 }
+
+@media screen and (max-width:640px) {
+.site-bookmark-li {
+  line-height: 200%;
+  margin-right: 0.5rem;
+}
+}
