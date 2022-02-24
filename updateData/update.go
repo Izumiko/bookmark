@@ -185,8 +185,9 @@ func processSite(site *Site, force bool) *Site {
 	site.SearchWords += " " + tmpstr
 	re := regexp.MustCompile("(?:[\\w-]+\\.)+\\w+")
 	host := re.FindString(site.Url)
-	strs := strings.Split(host, ".")
-	site.SearchWords += " " + strings.Join(strs[len(strs)-2:], ".")
+	// strs := strings.Split(host, ".")
+	// site.SearchWords += " " + strings.Join(strs[len(strs)-2:], ".")
+	site.SearchWords += " " + host
 	site.DataUriClass = generateDataUri(site.Favicon)
 	return site
 }
