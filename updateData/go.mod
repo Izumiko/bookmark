@@ -3,8 +3,8 @@ module updateData
 go 1.17
 
 require (
-	github.com/mat/besticon v0.0.0-20210801190920-bdff7778a634
-	github.com/mozillazg/go-pinyin v0.18.0
-	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d
+	github.com/mat/besticon v0.0.0-20220207204004-4891fdaaee4e
+	github.com/mozillazg/go-pinyin v0.19.0
+	golang.org/x/image v0.0.0-20220902085622-e7cb96979f69
 	gopkg.in/yaml.v2 v2.4.0
 )

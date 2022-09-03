@@ -201,12 +201,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = os.Rename("data/websites.yml", "data/websites-old.yml")
+	if err != nil {
+		log.Fatal(err)
+	}
 	err = os.Mkdir("content/img", 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ymlFile, err := ioutil.ReadFile("data/websites.yml")
+	ymlFile, err := ioutil.ReadFile("data/websites-old.yml")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -228,7 +232,7 @@ func main() {
 	}
 
 	d, err := yaml.Marshal(&data)
-	err = ioutil.WriteFile("data/new.yml", d, 0644)
+	err = ioutil.WriteFile("data/websites.yml", d, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
