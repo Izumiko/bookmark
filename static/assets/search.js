@@ -8,7 +8,7 @@
 
   document.addEventListener('keyup', handleGlobalKeyup);
   searchForm.addEventListener('submit', handleSearchFormSubmit);
-  searchInput.addEventListener('keyup', handleSearchInputKeyup);
+  searchInput.addEventListener('input', handleSearchInputKeyup);
 
   function handleGlobalKeyup(e) {
     if (e.altKey || e.ctrlKey || e.metaKey || document.activeElement === searchInput) {
