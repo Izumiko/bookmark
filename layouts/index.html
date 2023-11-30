@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ .Site.Title }}</title>
 <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+<meta name="description" content="{{ .Site.Title }}">
 <link rel="shortcut icon" type="image/png" href="favicon.ico"/>
 <link rel="stylesheet" href="assets/mobi.css/mobi.min.css" type='text/css' media='all' />
 <link rel="stylesheet" href="assets/site.css" type='text/css' media='all' />
@@ -28,7 +29,7 @@
             <li class="site-bookmark-li unit-0" data-name="{{ .searchwords }}">
               <a href="{{ .url }}" class="site-bookmark-a flex-middle" tabIndex="9" target="_blank" >
               {{ if $.Site.Params.useDataUri }}
-                <img class="site-bookmark-img {{ .datauriclass }}" height="16" width="16" />
+                <img class="site-bookmark-img {{ .datauriclass }}" alt="{{ .datauriclass }}" height="16" width="16" />
               {{ else }}
                 {{ if and (.favicon) (not (eq .favicon "")) }}
                   <img class="site-bookmark-img" src="{{ .favicon }}" height="16" width="16" />
