@@ -12,6 +12,10 @@
 {{ if $.Site.Params.useDataUri }}
 <link rel="stylesheet" href="assets/siteimg.css" type='text/css' media='all' />
 {{ end }}
+{{ if $.Site.Params.useCssSprites }}
+<link rel="prefetch" href="assets/sitesprites.png" />
+<link rel="stylesheet" href="assets/siteimgsprite.css" type='text/css' media='all' />
+{{ end }}
 </head>
 <body>
   <div class="flex-center">
@@ -30,11 +34,13 @@
               <a href="{{ .url }}" class="site-bookmark-a flex-middle" tabIndex="9" target="_blank" >
               {{ if $.Site.Params.useDataUri }}
                 <img class="site-bookmark-img {{ .datauriclass }}" alt="{{ .datauriclass }}" height="16" width="16" />
+              {{ else if $.Site.Params.useCssSprites }}
+                <img class="site-bookmark-img {{ .faviconclass }}" alt="{{ .faviconclass }}" height="16" width="16" />
               {{ else }}
                 {{ if and (.favicon) (not (eq .favicon "")) }}
-                  <img class="site-bookmark-img" src="{{ .favicon }}" height="16" width="16" />
+                  <img class="site-bookmark-img" src="{{ .favicon }}" alt="{{ .favicon }}" height="16" width="16" />
                 {{ else }}
-                  <img class="site-bookmark-img" src="/assets/nofav.png" height="16" width="16" />
+                  <img class="site-bookmark-img" src="/assets/nofav.png" alt="nofavicon" height="16" width="16" />
                 {{ end }}
               {{ end }}
                 <span>{{ .title }}</span>
