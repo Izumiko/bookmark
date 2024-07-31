@@ -1,12 +1,12 @@
 module updateData
 
-go 1.21
+go 1.22.3
 
-toolchain go1.21.4
+toolchain go1.22.5
 
 require (
-	github.com/mat/besticon v0.0.0-20231103204413-ee089084f347
+	github.com/mat/besticon/v3 v3.18.0
 	github.com/mozillazg/go-pinyin v0.20.0
-	golang.org/x/image v0.14.0
+	golang.org/x/image v0.18.0
 	gopkg.in/yaml.v3 v3.0.1
 )

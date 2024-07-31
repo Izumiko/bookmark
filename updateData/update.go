@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
-	"github.com/mat/besticon/ico"
+	"github.com/mat/besticon/v3/ico"
 	"github.com/mozillazg/go-pinyin"
 	"golang.org/x/image/draw"
 	"gopkg.in/yaml.v3"
