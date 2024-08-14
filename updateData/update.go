@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
 	"github.com/mat/besticon/v3/ico"
 	"github.com/mozillazg/go-pinyin"
 	"golang.org/x/image/draw"
@@ -45,14 +46,37 @@ const nofaviconStr = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABs0lEQVR4AW
 func getFavicon(url string) string {
 	re := regexp.MustCompile("(?:[\\w-]+\\.)+\\w+")
 	host := re.FindString(url)
-	//googleDownSrv := "https://www.google.com/s2/favicons?domain_url="
-	yandexDownSrv := "http://favicon.yandex.net/favicon/"
-	//ddgDownSrv := "https://icons.duckduckgo.com/ip3/www.google.com.ico"
+	googleDownSrv := "https://www.google.com/s2/favicons?domain_url=%s"
+	yandexDownSrv := "http://favicon.yandex.net/favicon/%s"
+	ddgDownSrv := "https://icons.duckduckgo.com/ip3/%s.ico"
+	srvs := []string{yandexDownSrv, ddgDownSrv, googleDownSrv}
 	if len(host) > 0 {
 		fav := "content/img/" + host + ".png"
 		time.Sleep(500 * time.Microsecond)
-		resp, err := http.Get(yandexDownSrv + host)
-		if err != nil {
+		s := strings.Split(host, ".")
+		mainHost := s[len(s)-2] + "." + s[len(s)-1]
+		hosts := []string{mainHost, host}
+		// try to download icon from public services
+		var resp *http.Response
+		var err error
+		success := false
+		for _, h := range hosts {
+			for _, srv := range srvs {
+				url := fmt.Sprintf(srv, h)
+				resp, err = http.Get(url)
+				if err != nil {
+					success = false
+				}
+				if resp != nil && resp.StatusCode == 200 {
+					success = true
+					break
+				}
+			}
+			if success {
+				break
+			}
+		}
+		if !success {
 			return ""
 		}
 		defer func(Body io.ReadCloser) {
