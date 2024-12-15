@@ -9,7 +9,7 @@
 }
 
 .site-bookmark-a {
-  color: #333;
+  color: var(--text-color);
   padding: 0 7.5px;
 }
 
@@ -18,7 +18,7 @@
 .site-bookmark-a-focus {
   opacity: 1;
   text-decoration: none;
-  background-color: #f2f2f2;
+  background-color: var(--focus-color);
 }
 
 .site-bookmark-a:focus,
@@ -41,4 +41,28 @@
   line-height: 200%;
   margin-right: 0.5rem;
 }
+}
+
+:root {
+  --bg-color: #fff;
+  --text-color: #333;
+  --input-color: #fff;
+  --focus-color: #f2f2f2;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #333;
+    --text-color: #ddd;
+    --input-color: #aaa;
+    --focus-color: #555;
+  }
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+#search-input {
+  background-color: var(--input-color);
 }
