@@ -47,7 +47,7 @@ func getFavicon(url string) string {
 	re := regexp.MustCompile("(?:[\\w-]+\\.)+\\w+")
 	host := re.FindString(url)
 	googleDownSrv := "https://www.google.com/s2/favicons?domain_url=%s"
-	yandexDownSrv := "http://favicon.yandex.net/favicon/%s"
+	yandexDownSrv := "https://favicon.yandex.net/favicon/%s"
 	ddgDownSrv := "https://icons.duckduckgo.com/ip3/%s.ico"
 	srvs := []string{yandexDownSrv, ddgDownSrv, googleDownSrv}
 	if len(host) > 0 {
@@ -65,9 +65,9 @@ func getFavicon(url string) string {
 				url := fmt.Sprintf(srv, h)
 				resp, err = http.Get(url)
 				if err != nil {
-					success = false
+					continue
 				}
-				if resp != nil && resp.StatusCode == 200 {
+				if resp.StatusCode == 200 {
 					success = true
 					break
 				}
@@ -76,7 +76,7 @@ func getFavicon(url string) string {
 				break
 			}
 		}
-		if !success {
+		if !success || resp == nil {
 			return ""
 		}
 		defer func(Body io.ReadCloser) {
